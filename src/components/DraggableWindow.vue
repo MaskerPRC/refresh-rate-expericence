@@ -4,6 +4,8 @@
     :style="{ 
       left: currentX + 'px', 
       top: currentY + 'px',
+      width: currentWidth + 'px',
+      height: currentHeight + 'px',
       transform: `translate3d(0, 0, 0)`
     }"
     ref="window"
@@ -29,16 +31,17 @@
     <div class="window-content">
       <div class="content-area">
         <div class="demo-content">
-          <h3>拖动体验测试</h3>
-          <p>当前位置: ({{ Math.round(currentX) }}, {{ Math.round(currentY) }})</p>
-          <p>拖动距离: {{ Math.round(totalDistance) }}px</p>
+                     <h3>拖动体验测试</h3>
+           <p>位置: ({{ Math.round(currentX) }}, {{ Math.round(currentY) }})</p>
+           <p>大小: {{ Math.round(currentWidth) }} × {{ Math.round(currentHeight) }}</p>
+           <p>拖动距离: {{ Math.round(totalDistance) }}px</p>
           <div class="movement-indicator" :style="indicatorStyle"></div>
         </div>
       </div>
     </div>
     
     <!-- 窗口调整大小手柄 -->
-    <div class="resize-handle" @mousedown="startResize"></div>
+    <div class="resize-handle" @mousedown="startResize" @touchstart="startResize"></div>
   </div>
 </template>
 
@@ -77,8 +80,12 @@ export default {
       isResizing: false,
       currentX: this.initialX,
       currentY: this.initialY,
+      currentWidth: 320,
+      currentHeight: 240,
       startX: 0,
       startY: 0,
+      startWidth: 0,
+      startHeight: 0,
       offsetX: 0,
       offsetY: 0,
       actualFps: 60,
@@ -87,7 +94,8 @@ export default {
       totalDistance: 0,
       lastPosition: { x: this.initialX, y: this.initialY },
       animationFrame: null,
-      delayQueue: [], // 延迟队列
+      delayQueue: [], // 延迟队列（位置）
+      resizeDelayQueue: [], // 延迟队列（大小）
       delayProcessor: null // 延迟处理器
     }
   },
@@ -113,15 +121,15 @@ export default {
     this.startFpsMonitoring()
     this.startDelayProcessor()
     document.addEventListener('mousemove', this.onMouseMove)
-    document.addEventListener('mouseup', this.stopDrag)
+    document.addEventListener('mouseup', this.stopActions)
     document.addEventListener('touchmove', this.onTouchMove, { passive: false })
-    document.addEventListener('touchend', this.stopDrag)
+    document.addEventListener('touchend', this.stopActions)
   },
   beforeUnmount() {
     document.removeEventListener('mousemove', this.onMouseMove)
-    document.removeEventListener('mouseup', this.stopDrag)
+    document.removeEventListener('mouseup', this.stopActions)
     document.removeEventListener('touchmove', this.onTouchMove)
-    document.removeEventListener('touchend', this.stopDrag)
+    document.removeEventListener('touchend', this.stopActions)
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame)
     }
@@ -144,15 +152,21 @@ export default {
     },
     
     onMouseMove(event) {
-      if (!this.isDragging) return
-      this.handleMove(event.clientX, event.clientY)
+      if (this.isDragging) {
+        this.handleMove(event.clientX, event.clientY)
+      } else if (this.isResizing) {
+        this.handleResize(event.clientX, event.clientY)
+      }
     },
     
     onTouchMove(event) {
-      if (!this.isDragging) return
       event.preventDefault()
       const touch = event.touches[0]
-      this.handleMove(touch.clientX, touch.clientY)
+      if (this.isDragging) {
+        this.handleMove(touch.clientX, touch.clientY)
+      } else if (this.isResizing) {
+        this.handleResize(touch.clientX, touch.clientY)
+      }
     },
     
     handleMove(clientX, clientY) {
@@ -202,21 +216,77 @@ export default {
       this.$emit('position-change', this.id, x, y)
     },
     
-    stopDrag() {
-      if (!this.isDragging) return
+    stopActions() {
+      if (this.isDragging) {
+        this.isDragging = false
+        this.$refs.window.style.zIndex = '1'
+        // 清空位置延迟队列
+        this.delayQueue = []
+      }
       
-      this.isDragging = false
-      this.$refs.window.style.zIndex = '1'
-      
-      // 清空延迟队列
-      this.delayQueue = []
+      if (this.isResizing) {
+        this.isResizing = false
+        this.$refs.window.style.cursor = 'default'
+        // 清空大小延迟队列
+        this.resizeDelayQueue = []
+      }
     },
     
     startResize(event) {
       event.preventDefault()
       event.stopPropagation()
       this.isResizing = true
-      // 这里可以添加调整大小的逻辑
+      
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY
+      
+      this.startX = clientX
+      this.startY = clientY
+      this.startWidth = this.currentWidth
+      this.startHeight = this.currentHeight
+      
+      this.$refs.window.style.cursor = 'nw-resize'
+    },
+    
+    handleResize(clientX, clientY) {
+      if (!this.isResizing) return
+      
+      const now = performance.now()
+      if (now - this.lastFrameTime < this.frameInterval) {
+        return // 限制刷新率
+      }
+      
+      const deltaX = clientX - this.startX
+      const deltaY = clientY - this.startY
+      
+      const newWidth = Math.max(200, this.startWidth + deltaX) // 最小宽度200px
+      const newHeight = Math.max(150, this.startHeight + deltaY) // 最小高度150px
+      
+      // 应用延迟 - 真正的调整大小延迟实现
+      if (this.delay > 0) {
+        // 将当前大小和时间加入延迟队列
+        this.resizeDelayQueue.push({
+          width: newWidth,
+          height: newHeight,
+          timestamp: now + this.delay
+        })
+      } else {
+        this.updateSize(newWidth, newHeight)
+        this.lastFrameTime = now
+      }
+    },
+    
+    updateSize(width, height) {
+      // 边界检测 - 确保不超出父容器
+      const parentRect = this.$refs.window.parentElement.getBoundingClientRect()
+      const maxWidth = parentRect.width - this.currentX
+      const maxHeight = parentRect.height - this.currentY
+      
+      width = Math.min(width, maxWidth - 20) // 留20px边距
+      height = Math.min(height, maxHeight - 20)
+      
+      this.currentWidth = width
+      this.currentHeight = height
     },
     
     startFpsMonitoring() {
@@ -250,6 +320,13 @@ export default {
           this.lastFrameTime = now
         }
         
+        // 处理延迟队列中到期的大小更新
+        while (this.resizeDelayQueue.length > 0 && this.resizeDelayQueue[0].timestamp <= now) {
+          const delayedResize = this.resizeDelayQueue.shift()
+          this.updateSize(delayedResize.width, delayedResize.height)
+          this.lastFrameTime = now
+        }
+        
         // 继续处理
         this.delayProcessor = requestAnimationFrame(processDelayQueue)
       }
@@ -263,8 +340,8 @@ export default {
 <style scoped>
 .draggable-window {
   position: absolute;
-  width: 320px;
-  height: 240px;
+  min-width: 200px;
+  min-height: 150px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
@@ -272,7 +349,7 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
   transition: box-shadow 0.2s ease;
-  will-change: transform;
+  will-change: transform, width, height;
 }
 
 .draggable-window:hover {
@@ -372,10 +449,16 @@ export default {
   height: 20px;
   cursor: nw-resize;
   background: linear-gradient(-45deg, transparent 40%, #ccc 50%, transparent 60%);
+  transition: all 0.2s ease;
 }
 
 .resize-handle:hover {
-  background: linear-gradient(-45deg, transparent 40%, #999 50%, transparent 60%);
+  background: linear-gradient(-45deg, transparent 30%, #4f46e5 50%, transparent 70%);
+  transform: scale(1.2);
+}
+
+.resize-handle:active {
+  background: linear-gradient(-45deg, transparent 30%, #4338ca 50%, transparent 70%);
 }
 
 /* 拖动时的样式 */

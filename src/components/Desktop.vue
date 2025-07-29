@@ -61,8 +61,8 @@ export default {
   data() {
     return {
       windows: [
-        { id: 1, x: 200, y: 150, title: '测试窗口 1' },
-        { id: 2, x: 400, y: 250, title: '测试窗口 2' }
+        { id: 1, x: 450, y: 120, title: '测试窗口 1' },
+        { id: 2, x: 650, y: 300, title: '测试窗口 2' }
       ],
       currentFps: 60,
       frameCount: 0,
@@ -81,10 +81,12 @@ export default {
   methods: {
     addWindow() {
       const desktopRect = this.$refs.desktop.getBoundingClientRect()
+      const controlPanelWidth = 400 // 控制面板宽度
+      const availableWidth = desktopRect.width - controlPanelWidth - 350 // 减去窗口宽度和边距
       const newWindow = {
         id: Date.now(),
-        x: Math.random() * (desktopRect.width - 300) + 50,
-        y: Math.random() * (desktopRect.height - 200) + 50,
+        x: Math.random() * availableWidth + controlPanelWidth + 20, // 从控制面板右侧开始
+        y: Math.random() * (desktopRect.height - 300) + 80, // 避开顶部
         title: `窗口 ${this.windows.length + 1}`
       }
       this.windows.push(newWindow)
