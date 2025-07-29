@@ -159,8 +159,8 @@ export default {
   data() {
     return {
       isCollapsed: false,
-      refreshRatePresets: [30, 60, 90, 120, 144],
-      delayPresets: [0, 50, 100, 200, 500]
+      refreshRatePresets: [30, 60, 90, 120, 144, 165, 240],
+      delayPresets: [0, 25, 50, 100, 250, 500]
     }
   },
   computed: {

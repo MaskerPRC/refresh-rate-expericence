@@ -87,7 +87,8 @@ export default {
       totalDistance: 0,
       lastPosition: { x: this.initialX, y: this.initialY },
       animationFrame: null,
-      pendingUpdate: null
+      delayQueue: [], // 延迟队列
+      delayProcessor: null // 延迟处理器
     }
   },
   computed: {
@@ -110,6 +111,7 @@ export default {
   },
   mounted() {
     this.startFpsMonitoring()
+    this.startDelayProcessor()
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.stopDrag)
     document.addEventListener('touchmove', this.onTouchMove, { passive: false })
@@ -123,8 +125,8 @@ export default {
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame)
     }
-    if (this.pendingUpdate) {
-      clearTimeout(this.pendingUpdate)
+    if (this.delayProcessor) {
+      cancelAnimationFrame(this.delayProcessor)
     }
   },
   methods: {
@@ -172,16 +174,14 @@ export default {
       this.totalDistance += distance
       this.lastPosition = { x: newX, y: newY }
       
-      // 应用延迟
+      // 应用延迟 - 真正的响应延迟实现
       if (this.delay > 0) {
-        if (this.pendingUpdate) {
-          clearTimeout(this.pendingUpdate)
-        }
-        
-        this.pendingUpdate = setTimeout(() => {
-          this.updatePosition(newX, newY)
-          this.lastFrameTime = now
-        }, this.delay)
+        // 将当前位置和时间加入延迟队列
+        this.delayQueue.push({
+          x: newX,
+          y: newY,
+          timestamp: now + this.delay
+        })
       } else {
         this.updatePosition(newX, newY)
         this.lastFrameTime = now
@@ -208,10 +208,8 @@ export default {
       this.isDragging = false
       this.$refs.window.style.zIndex = '1'
       
-      if (this.pendingUpdate) {
-        clearTimeout(this.pendingUpdate)
-        this.pendingUpdate = null
-      }
+      // 清空延迟队列
+      this.delayQueue = []
     },
     
     startResize(event) {
@@ -239,6 +237,24 @@ export default {
       }
       
       this.animationFrame = requestAnimationFrame(measureFps)
+    },
+    
+    startDelayProcessor() {
+      const processDelayQueue = () => {
+        const now = performance.now()
+        
+        // 处理延迟队列中到期的位置更新
+        while (this.delayQueue.length > 0 && this.delayQueue[0].timestamp <= now) {
+          const delayedUpdate = this.delayQueue.shift()
+          this.updatePosition(delayedUpdate.x, delayedUpdate.y)
+          this.lastFrameTime = now
+        }
+        
+        // 继续处理
+        this.delayProcessor = requestAnimationFrame(processDelayQueue)
+      }
+      
+      this.delayProcessor = requestAnimationFrame(processDelayQueue)
     }
   }
 }
