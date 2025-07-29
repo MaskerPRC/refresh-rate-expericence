@@ -4,14 +4,14 @@
     <div class="toggle-btn" @click="togglePanel">
       <span class="icon">{{ isCollapsed ? '⚙️' : '✕' }}</span>
     </div>
-    
+
     <!-- 面板内容 -->
     <div class="panel-content" v-show="!isCollapsed">
       <div class="panel-header">
         <h2 class="panel-title">🎮 刷新率体验控制台</h2>
         <p class="panel-subtitle">调整参数体验不同的性能表现</p>
       </div>
-      
+
       <!-- 刷新率控制 -->
       <div class="control-group">
         <div class="control-header">
@@ -23,12 +23,12 @@
             {{ refreshRate }}Hz
           </div>
         </div>
-        
+
         <div class="slider-container">
-          <input 
-            type="range" 
+          <input
+            type="range"
             class="slider refresh-rate-slider"
-            :min="5" 
+            :min="5"
             :max="maxRefreshRate"
             :value="refreshRate"
             @input="updateRefreshRate"
@@ -42,9 +42,9 @@
             <span class="mark" style="left: 100%">{{ maxRefreshRate }}Hz</span>
           </div>
         </div>
-        
+
         <div class="preset-buttons">
-          <button 
+          <button
             v-for="preset in refreshRatePresets"
             :key="preset"
             class="preset-btn"
@@ -55,7 +55,7 @@
           </button>
         </div>
       </div>
-      
+
       <!-- 延迟控制 -->
       <div class="control-group">
         <div class="control-header">
@@ -67,12 +67,12 @@
             {{ delay }}ms
           </div>
         </div>
-        
+
         <div class="slider-container">
-          <input 
-            type="range" 
+          <input
+            type="range"
             class="slider delay-slider"
-            :min="0" 
+            :min="0"
             :max="1000"
             :step="10"
             :value="delay"
@@ -87,9 +87,9 @@
             <span class="mark" style="left: 100%">1s</span>
           </div>
         </div>
-        
+
         <div class="preset-buttons">
-          <button 
+          <button
             v-for="preset in delayPresets"
             :key="preset"
             class="preset-btn"
@@ -100,7 +100,7 @@
           </button>
         </div>
       </div>
-      
+
       <!-- 信息提示 -->
       <div class="info-section">
         <div class="info-card">
@@ -112,7 +112,7 @@
             <li>观察窗口内的运动指示器颜色变化</li>
           </ul>
         </div>
-        
+
         <div class="stats-card">
           <h4>📊 当前状态</h4>
           <div class="stat-item">
@@ -125,7 +125,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 重置按钮 -->
       <div class="action-buttons">
         <button class="btn btn-secondary" @click="resetToDefaults">
@@ -231,7 +231,6 @@ export default {
 .control-panel.collapsed {
   width: 60px;
   height: 60px;
-  border-radius: 50%;
 }
 
 .toggle-btn {
@@ -519,14 +518,14 @@ export default {
     max-width: none;
     min-width: auto;
   }
-  
+
   .panel-content {
     padding: 20px;
     padding-top: 45px;
   }
-  
+
   .info-section {
     grid-template-columns: 1fr;
   }
 }
-</style> 
+</style>
