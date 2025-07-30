@@ -216,6 +216,7 @@ export default {
 .control-panel {
   position: fixed;
   top: 20px;
+  bottom: 20px;
   left: 20px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
@@ -267,6 +268,8 @@ export default {
 .panel-content {
   padding: 25px;
   padding-top: 50px;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .panel-header {
@@ -513,10 +516,17 @@ export default {
 /* 响应式设计 */
 @media (max-width: 768px) {
   .control-panel {
+    top: 150px;
+    bottom: 10px;
     left: 10px;
     right: 10px;
     max-width: none;
     min-width: auto;
+  }
+
+  .control-panel.collapsed {
+    top: 20px;
+    left: 20px;
   }
 
   .panel-content {
