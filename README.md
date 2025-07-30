@@ -1,6 +1,24 @@
-# 🎮 刷新率体验项目
+<div align="center">
+  <img src="./public/logo.png" alt="刷新率体验项目" width="120" height="120" />
+  
+  # 🎮 刷新率体验项目
+  
+  一个基于 Vue 3 + Vite 的交互式刷新率体验应用<br/>
+  让用户通过拖动虚拟窗口来直观感受不同刷新率和延迟的区别
+  
+  [![GitHub stars](https://img.shields.io/github/stars/MaskerPRC/refresh-rate-expericence?style=for-the-badge&logo=github)](https://github.com/MaskerPRC/refresh-rate-expericence/stargazers)
+  [![GitHub forks](https://img.shields.io/github/forks/MaskerPRC/refresh-rate-expericence?style=for-the-badge&logo=github)](https://github.com/MaskerPRC/refresh-rate-expericence/network)
+  [![GitHub issues](https://img.shields.io/github/issues/MaskerPRC/refresh-rate-expericence?style=for-the-badge&logo=github)](https://github.com/MaskerPRC/refresh-rate-expericence/issues)
+  [![License](https://img.shields.io/github/license/MaskerPRC/refresh-rate-expericence?style=for-the-badge)](./LICENSE)
+  
+  [![Vue](https://img.shields.io/badge/Vue-3.x-4FC08D?style=flat-square&logo=vue.js)](https://vuejs.org/)
+  [![Vite](https://img.shields.io/badge/Vite-4.x-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
+  [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+</div>
 
-一个基于 Vue 3 + Vite 的交互式刷新率体验应用，让用户通过拖动虚拟窗口来直观感受不同刷新率和延迟的区别。
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=MaskerPRC/refresh-rate-expericence&type=Date)](https://star-history.com/#MaskerPRC/refresh-rate-expericence&Date)
 
 ## 快速体验
 https://fps.agitao.me/
@@ -139,6 +157,24 @@ src/
 
 欢迎提交 Issues 和 Pull Requests！
 
-## �� 许可证
+## 💬 交流群
+
+<div align="center">
+  <img src="./public/wechat.jpg" alt="微信交流群" width="200" />
+  <p><strong>扫码加入微信交流群</strong></p>
+  <p>讨论项目特性、分享使用心得、技术交流</p>
+</div>
+
+## 🙏 支持项目
+
+如果这个项目对你有帮助，请给个 ⭐️ Star 支持一下！
+
+你也可以：
+- 🐛 [报告 Bug](https://github.com/MaskerPRC/refresh-rate-expericence/issues/new?template=bug_report.md)
+- 💡 [提出建议](https://github.com/MaskerPRC/refresh-rate-expericence/issues/new?template=feature_request.md)
+- 🔀 提交 Pull Request
+- 📢 分享给更多人
+
+## 📄 许可证
 
 MIT License 

@@ -176,7 +176,7 @@ export default {
 .add-window-btn {
   position: absolute;
   bottom: 30px;
-  left: 30px;
+  right: 30px;
   background: rgba(79, 70, 229, 0.9);
   color: white;
   padding: 12px 20px;

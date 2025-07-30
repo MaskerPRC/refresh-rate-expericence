@@ -3,9 +3,17 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "一个基于 Vue 3 的交互式刷新率体验应用，让用户通过拖动虚拟窗口来直观感受不同刷新率和延迟的区别",
+  "keywords": ["vue3", "vite", "refresh-rate", "interactive", "performance", "gaming"],
+  "author": "Your Name",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaskerPRC/refresh-rate-expericence.git"
+  },
+  "homepage": "https://maskerprc.github.io/refresh-rate-expericence",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "NODE_ENV=production vite build",
     "preview": "vite preview"
   },
   "dependencies": {
