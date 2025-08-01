@@ -17,6 +17,7 @@
 </div>
 
 ## 🌟 Star History
+**开发不易，求个小星星✨**
 
 [![Star History Chart](https://api.star-history.com/svg?repos=MaskerPRC/refresh-rate-expericence&type=Date)](https://star-history.com/#MaskerPRC/refresh-rate-expericence&Date)
 
