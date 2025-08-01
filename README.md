@@ -16,6 +16,11 @@
   [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 </div>
 
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=MaskerPRC/refresh-rate-expericence&type=Date)](https://star-history.com/#MaskerPRC/refresh-rate-expericence&Date)
+
+
 ## 快速体验
 https://fps.agitao.me/
 
