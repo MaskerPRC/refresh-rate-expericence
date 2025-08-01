@@ -22,10 +22,17 @@
 [![Star History Chart](https://api.star-history.com/svg?repos=MaskerPRC/refresh-rate-expericence&type=Date)](https://star-history.com/#MaskerPRC/refresh-rate-expericence&Date)
 
 
-## 快速体验
+## 👣快速体验
 https://fps.agitao.me/
 
 <img width="2910" height="1520" alt="image" src="https://github.com/user-attachments/assets/c7c46601-0d0f-4cba-bbde-2bcb0d801248" />
+
+## 👀欢迎加入微信交流群
+https://100.agitao.net/
+
+![100个AI产品交流群](https://github.com/user-attachments/assets/c92c830c-5422-464d-a516-c86656a15188)
+
+
 
 ## ✨ 功能特性
 
